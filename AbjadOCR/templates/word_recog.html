@@ -1,0 +1,839 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name='viewport'
+          content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
+    <meta http-equiv='cache-control' content='no-cache'>
+    <meta http-equiv='expires' content='0'>
+    <meta http-equiv='pragma' content='no-cache'>
+    <link rel="icon" href="images/favicon.ico" type="image/ico" />
+
+    <title>Abjad OCR | </title>
+
+    <!-- Bootstrap -->
+    <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="../vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+
+    <!-- bootstrap-progressbar -->
+    <link href="../vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+    <!-- JQVMap -->
+    <link href="../vendors/jqvmap/dist/jqvmap.min.css" rel="stylesheet" />
+    <!-- bootstrap-daterangepicker -->
+    <link href="../vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="../build/css/custom.min.css" rel="stylesheet">
+
+    {% block stylesheets %}
+    <!-- Bootstrap -->
+    <link href="{{ url_for('static', filename='vendors/bootstrap/dist/css/bootstrap.min.css') }}" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="{{ url_for('static', filename='vendors/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="{{ url_for('static', filename='vendors/nprogress/nprogress.css') }}" rel="stylesheet">
+    <!-- bootstrap-daterangepicker -->
+    <link href="{{ url_for('static', filename='vendors/bootstrap-daterangepicker/daterangepicker.css') }}" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="{{ url_for('static', filename='vendors/iCheck/skins/flat/green.css') }}" rel="stylesheet">
+    <!-- bootstrap-progressbar -->
+    <link href="{{ url_for('static', filename='vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css') }}" rel="stylesheet">
+    <!-- JQVMap -->
+    <link href="{{ url_for('static', filename='vendors/jqvmap/dist/jqvmap.min.css') }}" rel="stylesheet" />
+    {% endblock stylesheets %}
+    <!-- Custom Theme Style -->
+    <link href="{{ url_for('static', filename='build/css/custom.css') }}" rel="stylesheet">
+    <style>
+        canvas {
+        }
+
+        .btn-circle {
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            padding: 6px 0;
+            font-size: 12px;
+            line-height: 1.428571429;
+            border-radius: 15px;
+        }
+
+            .btn-circle.btn-lg {
+                width: 50px;
+                height: 50px;
+                padding: 10px 16px;
+                font-size: 18px;
+                line-height: 1.33;
+                border-radius: 25px;
+            }
+
+            .btn-circle.btn-xl {
+                width: 70px;
+                height: 70px;
+                padding: 10px 16px;
+                font-size: 24px;
+                line-height: 1.33;
+                border-radius: 35px;
+            }
+    </style>
+</head>
+
+<body class="nav-md" onload="init()" onresize="canvas_resize_X()">
+    <div class="container body">
+        <div class="main_container">
+            <div class="col-md-3 left_col">
+                <div class="left_col scroll-view">
+                    <div class="navbar nav_title" style="border: 0;">
+                        <a href="index.html" class="site_title"><img src="{{ url_for('static', filename='build/images/ocrlogo.png') }}" width="40" height="40" /><span> |    Abjad OCR</span></a>
+                    </div>
+
+                    <div class="clearfix"></div>
+                    <!-- /menu profile quick info -->
+
+                    <br />
+
+                    <!-- sidebar menu -->
+                    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                        <div class="menu_section">
+                            <h3>OPTIONS</h3>
+                            <ul class="nav side-menu">
+                                <li>
+                                    <a href="{{ url_for('index') }}"><i class="fa fa-desktop"></i> Character Recognition <span class="fa"></span></a>
+                                </li>
+                                <li>
+                                    <a href="{{ url_for('word_recog') }}"><i class="fa fa-edit"></i> Word Recognition <span class="fa "></span></a>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+                    <!-- /sidebar menu -->
+                    <!-- /menu footer buttons -->
+                    <div class="sidebar-footer hidden-small">
+                        <a data-toggle="tooltip" data-placement="top" title="Settings">
+                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                        </a>
+                        <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+                            <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                        </a>
+                        <a data-toggle="tooltip" data-placement="top" title="Lock">
+                            <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                        </a>
+                        <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
+                            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                    <!-- /menu footer buttons -->
+                </div>
+            </div>
+
+            <!-- top navigation -->
+            <div class="top_nav">
+                <div class="nav_menu">
+                    <nav>
+                        <div class="nav toggle">
+                            <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                        </div>
+
+
+                    </nav>
+                </div>
+            </div>
+            <!-- /top navigation -->
+            <!-- page content -->
+            <div class="right_col" role="main">
+                <!-- top tiles -->
+                <!-- /top tiles -->
+
+                <div class="row">
+                    <div align="center" class="col-md-12 col-sm-12 col-xs-12 w_center">
+                        <div class="dashboard_graph x_content">
+                            <div>
+                                <canvas id="sketchpad" width="1300" height="370" style="             background-color: white;
+            width: auto;
+            height: auto; border:8px solid; border-radius: 3px; border-color:Highlight; cursor: crosshair;"></canvas>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div align="center" class="col-md-12 col-sm-12 col-xs-12 w_center">
+                        <input id="ClearBtn" class="btn btn-circle.btn-xl ClearBtn" type="button" value="Clear">
+                        <input id="Predict" class="btn  Predict btn-lg btn-dark" type="button" value="Predict">
+                        <input id="Deskew" class="btn btn-default Deskew" type="button" value="Deskew">
+                        <input id="RemoveDots" class="btn btn-default RemoveDots" type="button" value="Remove Dots">
+                        <input id="SeperateSub-Words" class="btn btn-default SeperateCC" type="button" value="Seperate Sub-Words">
+                        <input id="Word-Baseline" class="btn btn-default WordBaseline" type="button" value="Word Baseline">
+                        <input id="Subword-Seperator" class="btn btn-default SubwordSeperator" type="button" value="Vertical Projection">
+                        <input id="Skeletonize-Word" class="btn btn-default Skeletonize" type="button" value="Skeletonize">
+                        <input id="Psp_Seg" class="btn btn-default PspSeg" type="button" value="PSP Segmentation">
+                    </div>
+
+                    <br />
+                    <br />
+                    <br />
+
+                </div>
+
+                <div class="x_panel tile">
+                    <div class="x_panel ui-ribbon-container fixed_height_390">
+                        <div class="ui-ribbon-wrapper">
+                            <div class="ui-ribbon">
+
+                            </div>
+                        </div>
+                        <div class="x_title">
+                            <h2>Prediction</h2>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+
+                            <div style="text-align: center; margin-bottom: 17px">
+                                <h1 style=font-size:200px id="result"></h1>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="x_panel tile">
+                    <div class="x_title">
+                        <h2>Deskew</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li>
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li>
+                                <a class="close-link"><i class="fa fa-close"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <div align="center" class="col-md-12 col-sm-12 col-xs-12 w_center">
+                            <div class="dashboard_graph x_content">
+                                <div>
+                                    <canvas id="deskew_image" width="1300" height="370" style="border:8px solid; border-radius: 3px; border-color:burlywood;"></canvas>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="x_panel tile">
+                    <div class="x_title">
+                        <h2>Removed Dots & Diacritics</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li>
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li>
+                                <a class="close-link"><i class="fa fa-close"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <div align="center" class="col-md-12 col-sm-12 col-xs-12 w_center">
+                            <div class="dashboard_graph x_content">
+                                <div>
+                                    <canvas id="remove_dots_image" width="1300" height="370" style="border:8px solid; border-radius: 3px; border-color:aquamarine;"></canvas>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="x_panel tile">
+                    <div class="x_title">
+                        <h2>Connected Components Separation</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li>
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li>
+                                <a class="close-link"><i class="fa fa-close"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <div align="center" class="col-md-12 col-sm-12 col-xs-12 w_center">
+                            <div class="dashboard_graph x_content">
+                                <div>
+                                    <canvas id="seperate_cc" width="1300" height="370" style="border:8px solid; border-radius: 3px; border-color:azure;"></canvas>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="x_panel tile">
+                    <div class="x_title">
+                        <h2>Word Baseline</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li>
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li>
+                                <a class="close-link"><i class="fa fa-close"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <div align="center" class="col-md-12 col-sm-12 col-xs-12 w_center">
+                            <div class="dashboard_graph x_content">
+                                <div>
+                                    <canvas id="word_baseline" width="1300" height="370" style="border:8px solid; border-radius: 3px; border-color:dimgray;"></canvas>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="x_panel tile">
+                    <div class="x_title">
+                        <h2>Vertical Projection</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li>
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li>
+                                <a class="close-link"><i class="fa fa-close"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <div align="center" class="col-md-12 col-sm-12 col-xs-12 w_center">
+                            <div class="dashboard_graph x_content">
+                                <div>
+                                    <canvas id="v_line_subwords_seperator" width="1300" height="370" style="border:8px solid; border-radius: 3px; border-color:dimgray;"></canvas>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="x_panel tile">
+                    <div class="x_title">
+                        <h2>Skeletonization</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li>
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li>
+                                <a class="close-link"><i class="fa fa-close"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <div align="center" class="col-md-12 col-sm-12 col-xs-12 w_center">
+                            <div class="dashboard_graph x_content">
+                                <div>
+                                    <canvas id="skeletonize_sketch" width="1300" height="370" style="border:8px solid; border-radius: 3px; border-color:dimgray;"></canvas>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="x_panel tile">
+                    <div class="x_title">
+                        <h2>Prospective Segmentation Points</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li>
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li>
+                                <a class="close-link"><i class="fa fa-close"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <div align="center" class="col-md-12 col-sm-12 col-xs-12 w_center">
+                            <div class="dashboard_graph x_content">
+                                <div>
+                                    <canvas id="psp_segmentation" width="1300" height="370" style="border:8px solid; border-radius: 3px; border-color:dimgray;"></canvas>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <footer>
+                <div class="pull-right">
+                    Abjad OCR - Handwritten Arabic Character Recognition <a href="https://github.com/ASDrygin/CNN-KERAS-Handwritten-Arabic-CR">Abjad OCR Github</a>
+                </div>
+                <div class="clearfix"></div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="../vendors/jquery/dist/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='vendors/jquery/dist/jquery.min.js') }}"></script>
+    <!-- Bootstrap -->
+    <script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='vendors/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+    <!-- FastClick -->
+    <script src="../vendors/fastclick/lib/fastclick.js"></script>
+    <script src="{{ url_for('static', filename='vendors/fastclick/lib/fastclick.js') }}"></script>
+    <!-- NProgress -->
+    <script src="../vendors/nprogress/nprogress.js"></script>
+    <script src="{{ url_for('static', filename='vendors/nprogress/nprogress.js') }}"></script>
+    <!-- Chart.js -->
+    <script src="../vendors/Chart.js/dist/Chart.min.js"></script>
+    <script src="{{ url_for('static', filename='vendors/Chart.js/dist/Chart.min.js') }}"></script>
+    <!-- gauge.js -->
+    <script src="../vendors/gauge.js/dist/gauge.min.js"></script>
+    <script src="{{ url_for('static', filename='vendors/gauge.js/dist/gauge.min.js') }}"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="../vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <script src="{{ url_for('static', filename='vendors/bootstrap-progressbar/bootstrap-progressbar.min.js') }}"></script>
+    <!-- iCheck -->
+    <script src="../vendors/iCheck/icheck.min.js"></script>
+    <script src="{{ url_for('static', filename='vendors/iCheck/icheck.min.js') }}"></script>
+
+    <!-- Skycons -->
+    <script src="../vendors/skycons/skycons.js"></script>
+    <script src="{{ url_for('static', filename='vendors/skycons/skycons.js') }}"></script>
+    <!-- Flot -->
+    <script src="../vendors/Flot/jquery.flot.js"></script>
+    <script src="../vendors/Flot/jquery.flot.pie.js"></script>
+    <script src="../vendors/Flot/jquery.flot.time.js"></script>
+    <script src="../vendors/Flot/jquery.flot.stack.js"></script>
+    <script src="../vendors/Flot/jquery.flot.resize.js"></script>
+    <script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.pie.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.time.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.stack.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.resize.js') }}"></script>
+    <!-- Flot plugins -->
+    <script src="../vendors/flot.orderbars/js/jquery.flot.orderBars.js"></script>
+    <script src="../vendors/flot-spline/js/jquery.flot.spline.min.js"></script>
+    <script src="../vendors/flot.curvedlines/curvedLines.js"></script>
+    <script src="{{ url_for('static', filename='vendors/flot.orderbars/js/jquery.flot.orderBars.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendors/flot-spline/js/jquery.flot.spline.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendors/flot.curvedlines/curvedLines.js') }}"></script>
+    <!-- DateJS -->
+    <script src="../vendors/DateJS/build/date.js"></script>
+    <script src="{{ url_for('static', filename='vendors/DateJS/build/date.js') }}"></script>
+    <!-- JQVMap -->
+    <script src="../vendors/jqvmap/dist/jquery.vmap.js"></script>
+    <script src="../vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
+    <script src="../vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
+    <script src="{{ url_for('static', filename='vendors/jqvmap/dist/jquery.vmap.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendors/jqvmap/dist/maps/jquery.vmap.world.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendors/jqvmap/examples/js/jquery.vmap.sampledata.js') }}"></script>
+    <!-- bootstrap-daterangepicker -->
+    <script src="../vendors/moment/min/moment.min.js"></script>
+    <script src="../vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <script src="{{ url_for('static', filename='vendors/moment/min/moment.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendors/bootstrap-daterangepicker/daterangepicker.js') }}"></script>
+    <!-- Custom Theme Scripts -->
+    <script src="../build/js/custom.min.js"></script>
+    <script src="{{ url_for('static', filename='build/js/custom.min.js') }}"></script>
+
+    <script>
+        var canvas, ctx
+        var mouseX, mouseY, mouseDown = 0,
+            lastX, lastY;
+
+        function draw(ctx, x, y, size) {
+            if (lastX && lastY && (x !== lastX || y !== lastY)) {
+                ctx.fillStyle = "#000000";
+                ctx.lineWidth = 3 * size;
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(x, y);
+                ctx.stroke();
+            }
+            ctx.fillStyle = "#000000";
+            ctx.beginPath();
+            ctx.arc(x, y, size, 0, Math.PI * 2, true);
+            ctx.closePath();
+            ctx.fill();
+            lastX = x;
+            lastY = y;
+        }
+
+        function onMouseDown() {
+            mouseDown = 1
+            draw(ctx, mouseX, mouseY, 2)
+        }
+
+        function onMouseUp() {
+            mouseDown = 0;
+            lastX = 0;
+            lastY = 0;
+        }
+
+        function onMouseMove(e) {
+            getMousePos(e)
+            if (mouseDown == 1) {
+                draw(ctx, mouseX, mouseY, 2)
+            }
+        }
+
+        function getMousePos(e) {
+            if (!e)
+                var e = event
+            if (e.offsetX) {
+                mouseX = e.offsetX
+                mouseY = e.offsetY
+            }
+            else if (e.layerX) {
+                mouseX = e.layerX
+                mouseY = e.layerY
+            }
+
+            $(".ClearBtn").click(function () {
+                clearCanvas(canvas, ctx);
+            });
+
+
+        }
+        function clearCanvas(canvas, ctx) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            hxd = document.getElementById("deskew_image");
+            hehe = hxd.getContext("2d");
+
+            hehe.clearRect(0, 0, hxd.width, hxd.height)
+            hehe.fillStyle = "white";
+            hehe.fillRect(0, 0, hxd.width, hxd.height);
+
+            hxd = document.getElementById("remove_dots_image");
+            hehe = hxd.getContext("2d");
+
+            hehe.clearRect(0, 0, hxd.width, hxd.height)
+            hehe.fillStyle = "white";
+            hehe.fillRect(0, 0, hxd.width, hxd.height);
+
+            hxd = document.getElementById("seperate_cc");
+            hehe = hxd.getContext("2d");
+
+            hehe.clearRect(0, 0, hxd.width, hxd.height)
+            hehe.fillStyle = "white";
+            hehe.fillRect(0, 0, hxd.width, hxd.height);
+
+            hxd = document.getElementById("word_baseline");
+            hehe = hxd.getContext("2d");
+
+            hehe.clearRect(0, 0, hxd.width, hxd.height)
+            hehe.fillStyle = "white";
+            hehe.fillRect(0, 0, hxd.width, hxd.height);
+
+            hxd = document.getElementById("v_line_subwords_seperator");
+            hehe = hxd.getContext("2d");
+
+            hehe.clearRect(0, 0, hxd.width, hxd.height)
+            hehe.fillStyle = "white";
+            hehe.fillRect(0, 0, hxd.width, hxd.height);
+
+            hxd = document.getElementById("skeletonize_sketch");
+            hehe = hxd.getContext("2d");
+
+            hehe.clearRect(0, 0, hxd.width, hxd.height)
+            hehe.fillStyle = "white";
+            hehe.fillRect(0, 0, hxd.width, hxd.height);
+
+            hxd = document.getElementById("psp_segmentation");
+            hehe = hxd.getContext("2d");
+
+            hehe.clearRect(0, 0, hxd.width, hxd.height)
+            hehe.fillStyle = "white";
+            hehe.fillRect(0, 0, hxd.width, hxd.height);
+
+        }
+
+        function init() {
+            canvas = document.getElementById('sketchpad')
+            ctx = canvas.getContext('2d')
+
+            canvas.addEventListener('mousedown', onMouseDown, false)
+            canvas.addEventListener('mousemove', onMouseMove, false)
+            window.addEventListener('mouseup', onMouseUp, false)
+
+            clearCanvas(canvas, ctx);
+            //canvas_resize();
+        }
+
+        function confz(obj) {
+            obj = JSON.parse(obj);
+            //alert(obj.confz[0]);
+            let res = "";
+
+            for (var i = 27; i >= 0; i--) {
+                res += "<div class='widget_summary'> <div class='w_left w_25'> <h2>" + obj.confz[i][0] + "</h2></div><div class='w_center w_55'><div class='progress'><div class='progress-bar bg-green' role='progressbar' aria-valuenow='60' aria-valuemin='0' aria-valuemax='100' style='width:" + String(obj.confz[i][1] * 100) + "%'><span class='sr-only'>60% Complete</span></div></div></div><div class='w_right w_20'><span>" + obj.confz[i][1] * 100 + "% </span></div><div class='clearfix'><div></div></div></div>";
+                res += "</br>";
+                //res += "<div><p id='first_char'>" + obj.confz[i][0] + "</p><div class=''><div class='progress progress_sm' style='width: " + "100%" + ";'><div id='first_goal' class='progress-bar bg-green' role='progressbar' data-transitiongoal='" + 80 + "'></div></div></div></div>";
+                //alert(obj.confz[i][1] * 100);
+            }
+
+
+            $('#confidences').html(res);
+        }
+
+        function canvas_resize() {
+            c = document.getElementById("sketchpad");
+            ctx = c.getContext("2d");
+            ctx.canvas.width = window.innerWidth / 1.25;
+
+            hxd = document.getElementById("deskew_image");
+            ctx = hxd.getContext("2d");
+            ctx.canvas.width = window.innerWidth / 1.25;
+            
+            hxd = document.getElementById("remove_dots_image");
+            ctx = hxd.getContext("2d");
+            ctx.canvas.width = window.innerWidth / 1.25;
+
+            hxd = document.getElementById("seperate_cc");
+            ctx = hxd.getContext("2d");
+            ctx.canvas.width = window.innerWidth / 1.25;
+
+            hxd = document.getElementById("word_baseline");
+            ctx = hxd.getContext("2d");
+            ctx.canvas.width = window.innerWidth / 1.25;
+
+            hxd = document.getElementById("v_line_subwords_seperator");
+            ctx = hxd.getContext("2d");
+            ctx.canvas.width = window.innerWidth / 1.25;
+            
+            hxd = document.getElementById("skeletonize_sketch");
+            ctx = hxd.getContext("2d");
+            ctx.canvas.width = window.innerWidth / 1.25;
+
+            hxd = document.getElementById("psp_segmentation");
+            ctx = hxd.getContext("2d");
+            ctx.canvas.width = window.innerWidth / 1.25;
+
+
+
+            //ctx.canvas.height = window.innerHeight;
+        }
+
+        function draw_url_to_canvas(dataURL, id) {
+
+            dataURL;
+
+            var hxd = document.getElementById(id);
+            var context = hxd.getContext('2d');
+
+            // load image from data url
+            var imageObj = new Image();
+            imageObj.onload = function () {
+                context.drawImage(this, 0, 0);
+            };
+
+            imageObj.src = dataURL;
+        }
+
+        init();
+    </script>
+    <script type="text/javascript">
+
+        $(".Predict").click(function () {
+            var $SCRIPT_ROOT = {{ request.script_root | tojson | safe }};
+        var canvasObj = document.getElementById("sketchpad");
+        var img = canvasObj.toDataURL();
+        $.ajax({
+            type: "POST",
+            url: $SCRIPT_ROOT + "/predict_word/",
+            data: img,
+            success: function (data) {
+                //alert(data);
+                $('#result').text(data);
+            }
+        });
+        });
+
+        $(".Deskew").click(function () {
+            var hxd = document.getElementById("deskew_image");
+            var ctx = hxd.getContext('2d');
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        var $SCRIPT_ROOT = {{ request.script_root | tojson | safe }};
+            var canvasObj = document.getElementById("sketchpad");
+            var img = canvasObj.toDataURL();
+            $.ajax({
+                type: "POST",
+                url: $SCRIPT_ROOT + "/deskew_image/",
+                data: img,
+                success: function (data) {
+                    //alert(data);
+                    draw_url_to_canvas(data, "deskew_image");
+                }
+            });
+        });
+
+
+        $(".RemoveDots").click(function () {
+            var hxd = document.getElementById("remove_dots_image");
+            var ctx_dots = hxd.getContext('2d');
+
+            ctx_dots.clearRect(0, 0, canvas.width, canvas.height)
+            ctx_dots.fillStyle = "white";
+            ctx_dots.fillRect(0, 0, canvas.width, canvas.height);
+
+            var $SCRIPT_ROOT = {{ request.script_root | tojson | safe }};
+        var canvasObj = document.getElementById("sketchpad");
+        var img = canvasObj.toDataURL();
+        $.ajax({
+            type: "POST",
+            url: $SCRIPT_ROOT + "/remove_dots_image/",
+            data: img,
+            success: function (data) {
+                //alert(data);
+                draw_url_to_canvas(data, "remove_dots_image");
+            }
+        });
+        });
+
+        $(".SeperateCC").click(function () {
+            var hxd = document.getElementById("seperate_cc");
+            var ctx_dots = hxd.getContext('2d');
+
+            ctx_dots.clearRect(0, 0, canvas.width, canvas.height)
+            ctx_dots.fillStyle = "white";
+            ctx_dots.fillRect(0, 0, canvas.width, canvas.height);
+
+            var $SCRIPT_ROOT = {{ request.script_root | tojson | safe }};
+        var canvasObj = document.getElementById("sketchpad");
+        var img = canvasObj.toDataURL();
+        $.ajax({
+            type: "POST",
+            url: $SCRIPT_ROOT + "/seperate_cc/",
+            data: img,
+            success: function (data) {
+                //alert(data);
+                draw_url_to_canvas(data, "seperate_cc");
+            }
+        });
+        });
+
+        $(".WordBaseline").click(function () {
+            var hxd = document.getElementById("word_baseline");
+            var ctx_dots = hxd.getContext('2d');
+
+            ctx_dots.clearRect(0, 0, canvas.width, canvas.height)
+            ctx_dots.fillStyle = "white";
+            ctx_dots.fillRect(0, 0, canvas.width, canvas.height);
+
+            var $SCRIPT_ROOT = {{ request.script_root | tojson | safe }};
+        var canvasObj = document.getElementById("sketchpad");
+        var img = canvasObj.toDataURL();
+        $.ajax({
+            type: "POST",
+            url: $SCRIPT_ROOT + "/word_baseline/",
+            data: img,
+            success: function (data) {
+                //alert(data);
+                draw_url_to_canvas(data, "word_baseline");
+            }
+        });
+        });
+
+        $(".SubwordSeperator").click(function () {
+            var hxd = document.getElementById("v_line_subwords_seperator");
+            var ctx_dots = hxd.getContext('2d');
+
+            ctx_dots.clearRect(0, 0, canvas.width, canvas.height)
+            ctx_dots.fillStyle = "white";
+            ctx_dots.fillRect(0, 0, canvas.width, canvas.height);
+
+            var $SCRIPT_ROOT = {{ request.script_root | tojson | safe }};
+        var canvasObj = document.getElementById("sketchpad");
+        var img = canvasObj.toDataURL();
+        $.ajax({
+            type: "POST",
+            url: $SCRIPT_ROOT + "/v_line_subwords_seperator/",
+            data: img,
+            success: function (data) {
+                //alert(data);
+                draw_url_to_canvas(data, "v_line_subwords_seperator");
+            }
+        });
+        });
+
+        $(".Skeletonize").click(function () {
+            var hxd = document.getElementById("skeletonize_sketch");
+            var ctx_dots = hxd.getContext('2d');
+
+            ctx_dots.clearRect(0, 0, canvas.width, canvas.height)
+            ctx_dots.fillStyle = "white";
+            ctx_dots.fillRect(0, 0, canvas.width, canvas.height);
+
+            var $SCRIPT_ROOT = {{ request.script_root | tojson | safe }};
+        var canvasObj = document.getElementById("sketchpad");
+        var img = canvasObj.toDataURL();
+        $.ajax({
+            type: "POST",
+            url: $SCRIPT_ROOT + "/get_skeleton/",
+            data: img,
+            success: function (data) {
+                //alert(data);
+                draw_url_to_canvas(data, "skeletonize_sketch");
+            }
+        });
+        });
+
+
+        $(".PspSeg").click(function () {
+            var hxd = document.getElementById("psp_segmentation");
+            var ctx_dots = hxd.getContext('2d');
+
+            ctx_dots.clearRect(0, 0, canvas.width, canvas.height)
+            ctx_dots.fillStyle = "white";
+            ctx_dots.fillRect(0, 0, canvas.width, canvas.height);
+
+            var $SCRIPT_ROOT = {{ request.script_root | tojson | safe }};
+        var canvasObj = document.getElementById("sketchpad");
+        var img = canvasObj.toDataURL();
+        $.ajax({
+            type: "POST",
+            url: $SCRIPT_ROOT + "/psp_seg/",
+            data: img,
+            success: function (data) {
+                //alert(data);
+                draw_url_to_canvas(data, "psp_segmentation");
+            }
+        });
+        });
+
+    </script>
+</body>
+</html>
